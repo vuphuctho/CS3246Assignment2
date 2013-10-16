@@ -1,6 +1,13 @@
 import javax.swing.*; 
 import java.awt.*;
 
+/* Job of class View:
+ * initialize UI 
+ * display chosen image after picking image by clicking button "Add Image"
+ * display list of results by clicking "Search now!"
+ * ask to update feedback by clicking "Reset search history"
+ * View will communicate with Controller to connect with Model  
+ */
 public class View extends JFrame {
 	// variables
 	public JPanel controlBar = new JPanel();
