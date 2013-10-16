@@ -3,7 +3,7 @@
  * Load data (list of images)
  * Building index of all images
  * Perform search 
- * Index and save/update old queries to use as feedback relevance
+ * Index and save/update old queries to use as feedback relevance (not compulsory)
  * All Data Readers/Loaders, Histogram building are implemented here  
  */
 
