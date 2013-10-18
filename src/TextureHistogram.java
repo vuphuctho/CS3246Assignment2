@@ -6,7 +6,7 @@
 public class TextureHistogram {
 
 	public int[][] filterMatrix(int[][] input, int filter_type) {		
-		int[][] output = new int[input.length][input[0].length];
+		int[][] output = new int[input.length][input[0].length+2];
 		
 		//based on filter_type, a different filter number will be assigned: first value is filter_type
 		int[][][] filter  = {
@@ -57,7 +57,17 @@ public class TextureHistogram {
 					    for(int t=0; t<3; t++){
 					    	for(int v=0; v<3; v++){
 					    		//apply filter by using multiplication 
-					    		output[u+i][t+j] += input[u+i][v+j] * filter[filter_type][v][t];
+					    		int in = 0;    		
+					    		if (((u+i) < input.length) && ((v+j) < input[0].length)) {
+						    		System.out.println("=======");
+						    		System.out.println(input.length);
+						    		System.out.println(input[0].length);
+						    		System.out.println(u+i);
+						    		System.out.println(v+j);
+					    			in = input[u+i][v+j];
+
+					    		}
+					    		output[u+i][t+j] += in * filter[filter_type][v][t];
 					    	}
 					    }
 					} //end of multiplying matrices
@@ -69,10 +79,16 @@ public class TextureHistogram {
 
 	public static void main(String[] args) {
 		int[][] test = {
-				{1,2,3},
-				{4,5,6},
-				{7,8,9}
+				{1,2,3,1},
+				{4,5,6,1},
+				{7,8,9,1}
 		};
+		// NOTE: Works only with complete matrix (none of the values above can be blank like this:
+		//{1,2,3,1},
+		//{4,5,6},
+		//{7,8,9}
+		System.out.println(test.length);
+		System.out.println(test[0].length);
 		TextureHistogram tx = new TextureHistogram();
 		int[][] result = tx.filterMatrix(test,0);
 		for (int i=0; i<result.length; i++) {
