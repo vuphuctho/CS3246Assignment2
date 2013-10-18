@@ -7,83 +7,66 @@ public class TextureHistogram {
 
 	public int[][] filterMatrix(int[][] input, int filter_type) {		
 		int[][] output = new int[input.length][input[0].length];
-		int[][] filter0 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
-		//Change later when working
-		int[][] filter1 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
-		int[][] filter2 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
-		int[][] filter3 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
-		int[][] filter4 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
-		int[][] filter5 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
-		int[][] filter6 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
-		int[][] filter7 = { //F0: 0 degrees
-				{1,1,-2},
-				{2,2,-4},
-				{1,1,-2}
-		};
 		
-		int[][] filter = filter1; //based on filter_type, a different filter number will be assigned
+		//based on filter_type, a different filter number will be assigned: first value is filter_type
+		int[][][] filter  = {
+				//Values taken from: http://www2.dis.ulpgc.es/~maleman/PDF/ScaleSpace.pdf
+				//Modified Newton filters and corresponding orientation
+				{	{1,1,-2},
+					{2,2,-4},
+					{1,1,-2}
+				}, //F0: 0
+				{	{1,-2,-4},
+					{1,2,-2},
+					{2,1,1}
+				}, //F1: pi/4
+				{	{-2,-4,-2},
+					{1,2,1},
+					{1,2,1}
+				}, //F2: pi/2
+				{	{-4,-2,1},
+					{-2,2,1},
+					{1,1,2}
+				}, //F3: 3pi/4
+				{	{-2,1,1},
+					{-4,2,2},
+					{-2,1,1}
+				}, //F4: pi
+				{	{1,1,2},
+					{-2,2,1},
+					{-4,-2,1}
+				}, //F5: 5pi/4
+				{	{1,2,1},
+					{1,2,1},
+					{-2,-4,-2}
+				}, //F6: 3pi/2
+				{	{2,1,1},
+					{1,2,-2},
+					{1,-2,-4}
+				}, //F7: 7pi/4
+			};
 		
+		//sweep through the image matrix
 		for (int i=0; i<input.length; i+= 3) {
 			for (int j=0; i<input[0].length; j+=3) {
 				//check if filter is applied outside matrix
 				if ((i >= input.length) || (j >= input[0].length)) {
-				    break;
+				    break; //if out of bounds break and continue at next 
 				} else { //if not then calculate multiplication
-					/*output[i][j] =     input[i][j] * filter[0][0]    + input[i][j+1] * filter[1][0]   + input[i][j+2] * filter[2][0];
-					output[i+1][j] =   input[i+1][j] * filter[0][0]  + input[i+1][j+1] * filter[1][0] + input[i+1][j+2] * filter[2][0];
-					output[i+2][j] =   input[i+2][j] * filter[0][0]  + input[i+2][j+1] * filter[1][0] + input[i+2][j+2] * filter[2][0];
-					output[i][j+1] =   input[i][j] * filter[0][1]    + input[i][j+1] * filter[1][1]   + input[i][j+2] * filter[2][1];
-					output[i+1][j+1] = input[i+1][j] * filter[0][1]  + input[i+1][j+1] * filter[1][1] + input[i+1][j+2] * filter[2][1];
-					output[i+2][j+1] = input[i+2][j] * filter[0][1]  + input[i+2][j+1] * filter[1][1] + input[i+2][j+2] * filter[2][1];
-					output[i][j+2] =   input[i][j] * filter[0][2]    + input[i][j+1] * filter[1][2]   + input[i][j+2] * filter[2][2];
-					output[i+1][j+2] = input[i+1][j] * filter[0][2]  + input[i+1][j+1] * filter[1][2] + input[i+1][j+2] * filter[2][2];
-					output[i+2][j+2] = input[i+2][j] * filter[0][2]  + input[i+2][j+1] * filter[1][2] + input[i+2][j+2] * filter[2][2];*/
 					for(int u=0; u<3; u++){
 					    for(int t=0; t<3; t++){
 					    	for(int v=0; v<3; v++){
-					    		output[u][t]+=input[u][v]*filter[v][t];
+					    		//apply filter by using multiplication 
+					    		output[u+i][t+j] += input[u+i][v+j] * filter[filter_type][v][t];
 					    	}
 					    }
-					}
-
+					} //end of multiplying matrices
 				}
 			}
 		}
-		
-		
-		
 		return output;
-		
 	}
-	
+
 	public static void main(String[] args) {
 		int[][] test = {
 				{1,2,3},
