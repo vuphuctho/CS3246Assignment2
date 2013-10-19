@@ -12,7 +12,7 @@ public class CCVHistogram {
         double[] alpha = new double[dim*dim*dim]; //bins with coherent pixels
         double[] beta = new double[dim*dim*dim];  //bins with non-coherent pixels
         double[] bins = new double[dim*dim*dim]; //overall weighted value of alpha and beta bins
-        int[][] imgIntensity = new int[imWidth][imHeight];
+        int[][][] imgIntensity = new int[imWidth][imHeight][3];
         boolean[][] check = new boolean[imWidth][imHeight];
         int step = 256 / dim;
         Raster raster = image.getRaster();
@@ -33,7 +33,9 @@ public class CCVHistogram {
                 int cbbin = cb / step;
                 int crbin = cr / step;
 
-                imgIntensity[i][j] =  ybin*dim*dim+cbbin*dim+crbin*dim;
+                imgIntensity[i][j][0] =  ybin;
+                imgIntensity[i][j][1] =  cbbin;
+                imgIntensity[i][j][2] =  crbin;
 
                 check[i][j] = false;
             }
@@ -47,9 +49,13 @@ public class CCVHistogram {
                 if (!check[i][j]) {
                     int area = dfs(imgIntensity, imgIntensity[i][j], i, j, check);
                     if (area > 5) {
-                        alpha[imgIntensity[i][j]]++;
+                        alpha[imgIntensity[i][j][0]*dim*dim
+                                +imgIntensity[i][j][1]*dim
+                                +imgIntensity[i][j][2]*dim]++;
                     } else {
-                        beta[imgIntensity[i][j]]++;
+                        beta[imgIntensity[i][j][0]*dim*dim
+                                +imgIntensity[i][j][1]*dim
+                                +imgIntensity[i][j][2]*dim]++;
                     }
                 }
             }
@@ -102,27 +108,31 @@ public class CCVHistogram {
 		
 	}
 
-    private static int dfs(int[][] img, int val, int x, int y, boolean[][] check) {
-        // neglect pixels having different value or being checked before
-        if (img[x][y] != val || check[x][y]== true) {
+    private static int dfs(int[][][] img, int[] val, int x, int y, boolean[][] check) {
+        // neglect if position is not validated
+        if (x<0 || y<0 || x>=img.length || y>=img[0].length) {
             return 0;
         }
 
-        // check this pixel
+        // neglect pixels being checked before
+        if (check[x][y]== true) {
+            return 0;
+        }
+
+        // neglect picel having different value
+        if (img[x][y][0] != val[0] ||
+            img[x][y][1] != val[1] ||
+            img[x][y][2] != val[2]) {
+            return 0;
+        }
+
+        // mark this pixel as checked
         check[x][y] = true;
 
         // initialize bound for loop
-        int lowerBoundX = (x==0)? x : x-1;
-        int upperBoundX = (x==img.length)? x : x+1;
-        int lowerBoundY = (y==0)? y : y-1;
-        int upperBoundY = (y==img[0].length)? y : y+1;
-
-        int area = 1;
-        for (int i=lowerBoundX; i<=upperBoundX; i++) {
-            for (int j=lowerBoundY; j<=upperBoundY; j++) {
-                area += dfs(img, val, i, j, check);
-            }
-        }
-        return area;
+        return 1 +  dfs(img, val, x-1, y-1, check) + dfs(img, val, x-1, y, check) +
+                    dfs(img, val, x-1, y+1, check) + dfs(img, val, x, y-1, check) +
+                    dfs(img, val, x, y+1, check) + dfs(img, val, x+1, y-1, check) +
+                    dfs(img, val, x+1, y, check) + dfs(img, val, x+1, y+1, check);
     }
 }
