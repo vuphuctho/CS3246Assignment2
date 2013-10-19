@@ -1,4 +1,3 @@
-package imagesimilarity;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
