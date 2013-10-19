@@ -1,10 +1,80 @@
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+
 /*
  * Job of class Texture Histogram
  * Index image into histogram using texture
  * with edge direction histogram technique
  */
 public class TextureHistogram {
+	
+	int dim = 64;
 
+	public double getTextureHistogram(BufferedImage image) {
+		int imHeight = image.getHeight();
+        int imWidth = image.getWidth();
+        double[] bins = new double[512]; //for 8 directions there will be 8^3 bins for 3 colors 
+        int step = 256 / dim;
+        Raster raster = image.getRaster();
+
+        int[][][] input = new int[3][imHeight][imWidth];
+        
+        for(int i = 0; i < imWidth; i++) {
+            for(int j = 0; j < imHeight; j++) {
+            	// rgb->ycrcb
+            	int r = raster.getSample(i,j,0);
+            	int g = raster.getSample(i,j,1);
+            	int b = raster.getSample(i,j,2);
+            	int y  = (int)( 0.299   * r + 0.587   * g + 0.114   * b);
+        		int cb = (int)(-0.16874 * r - 0.33126 * g + 0.50000 * b);
+        		int cr = (int)( 0.50000 * r - 0.41869 * g - 0.08131 * b);
+        		
+        		int ybin = y / step;
+        		int cbbin = cb / step;
+        		int crbin = cr / step;
+        		
+        		input[0][i][j] = ybin;
+        		input[1][i][j] = cbbin;
+        		input[2][i][j] = crbin;     	           	
+            }
+        }
+        
+        //Apply filters one by one
+        for (int i=0; i<8; i++) {
+            int[][][] output = new int[3][imHeight][imWidth];
+            
+            //Apply to all 3 color channels
+            for (int j=0; j<3; j++) {
+            	output[j] = filterMatrix(input[j],i);
+            }
+        	
+            //Iterate through all the pixels in the image
+            for (int u=0; u<imHeight; u++) {
+            	for (int v=0; v<imWidth; v++) {
+            		//if there is an edge (pixel value is non negative)
+            		if ((output[0][u][v] > 0) && (output[1][u][v] > 0) && (output[2][u][v] > 0)) {
+                        bins[ output[0][u][v]*dim*dim + output[1][u][v]*dim + output[2][u][v] ] ++; 
+                        //not sure if last one should be multiplied by dim
+            		}
+            	}
+            }
+        }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		return 0;
+		
+	}
+	
+	// Applies a filter to the input image
 	public int[][] filterMatrix(int[][] input, int filter_type) {		
 		int[][] output = new int[input.length][input[0].length+2];
 		
