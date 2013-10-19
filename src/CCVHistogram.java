@@ -47,7 +47,7 @@ public class CCVHistogram {
             for (int j=0; j<imHeight; j++) {
                 // perform depth first search with unchecked pixel
                 if (!check[i][j]) {
-                    int area = dfs(imgIntensity, imgIntensity[i][j], i, j, check);
+                    int area = dfs(imgIntensity, imgIntensity[i][j], i, j, imWidth, imHeight,check);
                     if (area > 5) {
                         alpha[imgIntensity[i][j][0]*dim*dim
                                 +imgIntensity[i][j][1]*dim
@@ -108,7 +108,7 @@ public class CCVHistogram {
 		
 	}
 
-    private static int dfs(int[][][] img, int[] val, int x, int y, boolean[][] check) {
+    private static int dfs(int[][][] img, int[] val, int x, int y, int width, int height, boolean[][] check) {
         // neglect if position is not validated
         if (x<0 || y<0 || x>=img.length || y>=img[0].length) {
             return 0;
@@ -130,9 +130,34 @@ public class CCVHistogram {
         check[x][y] = true;
 
         // initialize bound for loop
-        return 1 +  dfs(img, val, x-1, y-1, check) + dfs(img, val, x-1, y, check) +
-                    dfs(img, val, x-1, y+1, check) + dfs(img, val, x, y-1, check) +
-                    dfs(img, val, x, y+1, check) + dfs(img, val, x+1, y-1, check) +
-                    dfs(img, val, x+1, y, check) + dfs(img, val, x+1, y+1, check);
+        int area =  1;
+        if (x!=0 && x < width-1) {
+            if (y!=0) {
+                System.out.println("case 1 " + x + " " + y);
+                area += dfs(img, val, x, y-1, width, height,check);        
+                area += dfs(img, val, x-1, y-1, width, height, check);
+                area += dfs(img, val, x+1, y-1, width, height, check);
+            }
+            if (y< height-1) {
+                System.out.println("case 2 " + x + " " + y);
+                area += dfs(img, val, x, y+1, width, height, check);
+                area += dfs(img, val, x-1, y+1, width, height, check);
+                area += dfs(img, val, x+1, y+1, width, height, check);
+            }
+            area += dfs(img, val, x-1, y, width, height, check);
+            area += dfs(img, val, x+1, y, width, height, check);
+        } else if (x == 0) {
+
+        }
+        
+
+         
+        
+        
+
+        
+        
+
+        return area;
     }
 }
