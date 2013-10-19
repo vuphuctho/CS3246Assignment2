@@ -1,3 +1,4 @@
+package imagesimilarity;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
@@ -8,12 +9,12 @@ import java.awt.image.Raster;
  */
 public class TextureHistogram {
 	
-	int dim = 64;
+	static int dim = 64;
 
-	public double getTextureHistogram(BufferedImage image) {
+	public static double[] getTextureHistogram(BufferedImage image) {
 		int imHeight = image.getHeight();
         int imWidth = image.getWidth();
-        double[] bins = new double[512]; //for 8 directions there will be 8^3 bins for 3 colors 
+        double[] bins = new double[24]; //for 8 directions there will be 8x3 bins for 3 colors 
         int step = 256 / dim;
         Raster raster = image.getRaster();
 
@@ -33,9 +34,9 @@ public class TextureHistogram {
         		int cbbin = cb / step;
         		int crbin = cr / step;
         		
-        		input[0][i][j] = ybin;
-        		input[1][i][j] = cbbin;
-        		input[2][i][j] = crbin;     	           	
+        		input[0][j][i] = ybin;
+        		input[1][j][i] = cbbin;
+        		input[2][j][i] = crbin;     	           	
             }
         }
         
@@ -52,31 +53,28 @@ public class TextureHistogram {
             for (int u=0; u<imHeight; u++) {
             	for (int v=0; v<imWidth; v++) {
             		//if there is an edge (pixel value is non negative)
-            		if ((output[0][u][v] > 0) && (output[1][u][v] > 0) && (output[2][u][v] > 0)) {
-                        bins[ output[0][u][v]*dim*dim + output[1][u][v]*dim + output[2][u][v] ] ++; 
-                        //not sure if last one should be multiplied by dim
+            		if (output[0][u][v] > 0) {
+                        bins[i] ++; 
+                        //not sure if last one should be multiplied by 8
+            		}
+            		if (output[1][u][v] > 0) {
+                        bins[i+7] ++; 
+                        //not sure if last one should be multiplied by 8
+            		}
+            		if (output[2][u][v] > 0) {
+                        bins[i+15] ++; 
+                        //not sure if last one should be multiplied by 8
             		}
             	}
             }
         }
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		return 0;
-		
+		return bins;	
 	}
 	
 	// Applies a filter to the input image
-	public int[][] filterMatrix(int[][] input, int filter_type) {		
-		int[][] output = new int[input.length][input[0].length+2];
+	public static int[][] filterMatrix(int[][] input, int filter_type) {		
+		int[][] output = new int[input.length+4][input[0].length+4];
 		
 		//based on filter_type, a different filter number will be assigned: first value is filter_type
 		int[][][] filter  = {
@@ -129,11 +127,7 @@ public class TextureHistogram {
 					    		//apply filter by using multiplication 
 					    		int in = 0;    		
 					    		if (((u+i) < input.length) && ((v+j) < input[0].length)) {
-						    		System.out.println("=======");
-						    		System.out.println(input.length);
-						    		System.out.println(input[0].length);
-						    		System.out.println(u+i);
-						    		System.out.println(v+j);
+						    		//System.out.println(u + " " + t + " " + v);
 					    			in = input[u+i][v+j];
 
 					    		}
@@ -144,14 +138,22 @@ public class TextureHistogram {
 				}
 			}
 		}
-		return output;
+		
+		int[][] crop_output = new int[input.length][input[0].length];
+		for (int i=0; i<input.length; i++) {
+			for (int j=0; j<input[0].length; j++) {
+				//System.out.println(i + " " + j);
+				crop_output[i][j] = output[i][j];
+			}
+		}
+		return crop_output;
 	}
 
 	public static void main(String[] args) {
 		int[][] test = {
-				{1,2,3,1},
-				{4,5,6,1},
-				{7,8,9,1}
+				{1,2,3},
+				{4,5,6},
+				{7,8,9}
 		};
 		// NOTE: Works only with complete matrix (none of the values above can be blank like this:
 		//{1,2,3,1},
@@ -160,7 +162,7 @@ public class TextureHistogram {
 		System.out.println(test.length);
 		System.out.println(test[0].length);
 		TextureHistogram tx = new TextureHistogram();
-		int[][] result = tx.filterMatrix(test,0);
+		int[][] result = TextureHistogram.filterMatrix(test,0);
 		for (int i=0; i<result.length; i++) {
 			for (int j=0; j<result[0].length; j++) {
 				System.out.println(i + " " + j + " : " + result[i][j]);
