@@ -196,9 +196,11 @@ public class ColorHistogram extends JFrame {
 	
 	public double computeSimilarity() {
 		
-		double[] hist1 = getHist('a',buffered1);
-		double[] hist2 = getHist('a',buffered2);
-		
+		//double[] hist1 = getHist('a',buffered1);
+		//double[] hist2 = getHist('a',buffered2);
+		double[] hist1 = CCVHistogram.getCCVHistogram(buffered1);
+		double[] hist2 = CCVHistogram.getCCVHistogram(buffered1);
+
 		double distance = calculateDistance(hist1, hist2);
 		return 1-distance;
 	}

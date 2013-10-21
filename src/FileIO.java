@@ -1,13 +1,7 @@
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Vector;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-
-import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 
 
