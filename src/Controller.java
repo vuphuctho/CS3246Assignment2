@@ -1,3 +1,5 @@
+import java.awt.image.BufferedImage;
+
 /* Job of class Controller
  * communicate with View and Model
  * receive requests from View and pass to Model;
@@ -22,7 +24,6 @@ public class Controller {
 	public void run(){
 		view.setVisible(true);
 	}
-	
 	
 	// only for testing
 	public static void main(String[] args) {

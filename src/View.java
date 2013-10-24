@@ -128,14 +128,18 @@ public class View extends JFrame {
 	}
 
 	protected void getResults(BufferedImage buffered) {
-		// TODO Auto-generated method stub
-		int[] results = new int[20];
-		// INSERT SEARCH FUNCTION HERE
-		// SHOULD RETURN A LIST OF IMAGE INDEX
-
+		String[] results = new String[20];
+		
+		double[] dist = new double[400];
+		
 		for (int i = 0; i < 20; i++) {
+			File imgFile = new File(results[i]);
 			Image resultImg = null;
-			// TODO: LOAD IMAGES FROM FILES HERE
+			try {
+				resultImg = ImageIO.read(imgFile);
+			} catch (IOException e) {
+				System.out.println("Failed to load iamge!");
+			}
 
 			resultImg = resultImg.getScaledInstance(width, -1,
 					img.SCALE_DEFAULT);
