@@ -13,7 +13,7 @@ public class TextureHistogram {
 	public static double[] getTextureHistogram(BufferedImage image) {
 		int imHeight = image.getHeight();
         int imWidth = image.getWidth();
-        double[] bins = new double[24]; //for 8 directions there will be 8x3 bins for 3 colors 
+        double[] bins = new double[512];
         int step = 256 / dim;
         Raster raster = image.getRaster();
 
@@ -41,6 +41,7 @@ public class TextureHistogram {
         
         //Apply filters one by one
         for (int i=0; i<8; i++) {
+        //for (int i=0; i<2; i++) {
             int[][][] output = new int[3][imHeight][imWidth];
             
             //Apply to all 3 color channels
@@ -53,27 +54,29 @@ public class TextureHistogram {
             	for (int v=0; v<imWidth; v++) {
             		//if there is an edge (pixel value is non negative)
             		if (output[0][u][v] > 0) {
-                        bins[i] ++; 
-                        //not sure if last one should be multiplied by 8
+                        bins[i*8*8] ++; 
             		}
             		if (output[1][u][v] > 0) {
-                        bins[i+7] ++; 
-                        //not sure if last one should be multiplied by 8
+                        bins[i*8] ++; 
             		}
             		if (output[2][u][v] > 0) {
-                        bins[i+15] ++; 
-                        //not sure if last one should be multiplied by 8
+                        bins[i*8] ++; 
             		}
             	}
             }
         }
 		
+      //normalize
+      for(int i = 0; i < bins.length; i++) {
+    	  bins[i] = bins[i]/(imHeight*imWidth);
+      }
+        
 		return bins;	
 	}
 	
 	// Applies a filter to the input image
 	public static int[][] filterMatrix(int[][] input, int filter_type) {		
-		int[][] output = new int[input.length+4][input[0].length+4];
+		int[][] output = new int[input.length+2][input[0].length+2];
 		
 		//based on filter_type, a different filter number will be assigned: first value is filter_type
 		int[][][] filter  = {
@@ -113,6 +116,17 @@ public class TextureHistogram {
 				}, //F7: 7pi/4
 			};
 		
+		int[][][] filter_simple  = {
+				{	{1,0,-1},
+					{2,0,-2},
+					{1,0,-1}
+				}, //horizontal
+				{	{1,2,1},
+					{0,0,0},
+					{-1,-2,-1}
+				}, //vertical
+			};
+		
 		//sweep through the image matrix
 		for (int i=0; i<input.length; i+= 3) {
 			for (int j=0; i<input[0].length; j+=3) {
@@ -129,6 +143,7 @@ public class TextureHistogram {
 					    			in = input[u+i][v+j];
 					    		}
 					    		output[u+i][t+j] += in * filter[filter_type][v][t];
+					    		//output[u+i][t+j] += in * filter_simple[filter_type][v][t];
 					    	}
 					    }
 					} //end of multiplying matrices

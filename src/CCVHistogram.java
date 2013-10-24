@@ -110,7 +110,12 @@ public class CCVHistogram {
         	bins[i] = weight * alpha[i] + (1-weight) * beta[i];
             //bins[i] = weight;
         }
-        
+
+		// normalize
+		for (int i = 0; i < bins.length; i++) {
+			bins[i] = bins[i] / (imHeight * imWidth);
+		}
+
 		return bins;
 		
 	}
