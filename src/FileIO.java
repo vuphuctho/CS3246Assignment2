@@ -16,8 +16,9 @@ import javax.imageio.ImageIO;
 
 
 public class FileIO {
-	final static int N = 400; // max number of files
+	final static int N = 500; // max number of files
 	final static File data = new File("D:/Workplace/CS3246Assignment2/data/Dataset");
+	final static File index = new File("D:/Workplace/CS3246Assignment2/index");
 
 	//public static Vector<double[]> imgTextureHist = new Vector<double[]>();
 	
@@ -68,7 +69,7 @@ public class FileIO {
 	}
 
 	public static void getHist(double[][] CCVHist, double[][] TextureHist) {
-		for (final File fileEntry :data.listFiles()) {
+		for (final File fileEntry :index.listFiles()) {
 			if (fileEntry.isDirectory()) {
 	            listFilesForFolder(fileEntry);
 	        } else {
@@ -80,7 +81,7 @@ public class FileIO {
 		        	if (pos>0) {
 		        		fileName = fileName.substring(0, pos);
 		        	}
-		        	
+		        	System.out.println(fileName);
 		        	int imgNo = Integer.parseInt(fileName);
 		        	
 					fis = new FileInputStream(fileEntry);
@@ -107,6 +108,18 @@ public class FileIO {
 				}	
 	        }	
 		}
+	}
+	
+	public static Image loadResult(String fileName) {
+		File imgFile = new File("D:/Workplace/CS3246Assignment2/data/Dataset/" + fileName + ".jpg");
+		Image resultImg = null;
+		try {
+			resultImg = ImageIO.read(imgFile);
+		} catch (IOException e) {
+			System.out.println("Failed to load image!");
+		}
+		
+		return resultImg;
 	}
 	
 	public static void listFilesForFolder(final File folder) {

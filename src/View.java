@@ -134,20 +134,14 @@ public class View extends JFrame {
 		double[] queryTextureHist = TextureHistogram.getTextureHistogram(buffered);
 		
 		double[][] dataCCVHist = new double[FileIO.N][(int) Math.pow(CCVHistogram.dim, 3)];
-		double[][] dataTextureHist= new double[FileIO.N][TextureHistogram.dim];
+		double[][] dataTextureHist= new double[FileIO.N][512];
 		
 		FileIO.getHist(dataCCVHist, dataTextureHist);
 		
 		results = retrieveTopResult(queryCCVHist, queryTextureHist, dataCCVHist, dataTextureHist);
 		
 		for (int i = 0; i < 20; i++) {
-			File imgFile = new File(results[i]);
-			Image resultImg = null;
-			try {
-				resultImg = ImageIO.read(imgFile);
-			} catch (IOException e) {
-				System.out.println("Failed to load iamge!");
-			}
+			Image resultImg = FileIO.loadResult(results[i]);
 
 			resultImg = resultImg.getScaledInstance(width, -1,
 					img.SCALE_DEFAULT);
