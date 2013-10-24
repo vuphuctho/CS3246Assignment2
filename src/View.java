@@ -16,215 +16,93 @@ import java.io.IOException;
  * View will communicate with Controller to connect with Model  
  */
 public class View extends JFrame {
-	// variables
-	private JPanel contentPane = new JPanel();
-	private JPanel controlBar = new JPanel();
-	private JPanel searchPanel = new JPanel();
-	
-	private int width = 300; // the size for each image result
-	private int height = 300;
-	
-	
+   	private JPanel controlBar;	
+    private JButton addImage;
+    private JButton search;
+    private JButton resetData;
 
-	private JButton addImage;
-	private JButton search;
-	private JButton resetData;
-	
-	private JLabel imgThumb;
-	private JPanel searchResults;
-	private JScrollPane searchScroll;
-
-	private String imgPath;
+    private String imgPath;
 	private Image img;
 	private BufferedImage buffered;
-	
-	// constructor
-	public View() {
-		addImage = new JButton("Choose image");
-		search = new JButton("Search now!");
-		resetData = new JButton("Reset search history");
-		
-		imgThumb = new JLabel("Query Image");
-		searchResults = new JPanel();
-		JScrollPane searchScroll = new JScrollPane(searchResults);
+	private JLabel imgThumb;
 
-		//distLabel.setFont(new Font("Serif", Font.BOLD, 20));
-		
-		controlBar = new JPanel();
-		searchPanel = new JPanel();
-		
-		//hist1 = new Histogram();
-		//hist2 = new Histogram();
-		contentPane = (JPanel)this.getContentPane();
-		
-		setTitle("CS3246 Assignment 2");
+	private JPanel searchResults;
+	private JScrollPane searchScroll;
+	private JLabel[] resThumb;
+
+	private final int width = 300;
+    
+    // constructor
+    public View() {          
+    	init();
+		setTitle("CS3246 Assignment2");
+		setSize(800, 600);
 		setBackground(new Color(50, 50, 50));
-		setSize(800,600);
 		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		init();
+		setDefaultCloseOperation(EXIT_ON_CLOSE);        
+    }
+    
+    public void init() {
+    	
+    	//Initialize variables 
+    	//controlBar = (JPanel)this.getContentPane();
+    	controlBar = new JPanel();
+    	addImage = new JButton("Add Image");
+    	search = new JButton("Search now!");
+    	resetData = new JButton("Reset Search History");
+    	
+    	imgPath = "";
+    	img = null;
+    	buffered = null;
+    	imgThumb = new JLabel();
+    	
+    	searchResults = new JPanel();
+		searchScroll = new JScrollPane(searchResults, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
+		resThumb = new JLabel[20];
+        for (int i=0; i<20; i++) {
+        	resThumb[i] = new JLabel();
+        }
 		
-		
-	}
-	
-	public void init() {
-		// set bound of panel
-		//controlBar.setBounds(0, 300, 0, 0);
-		
-		// set bound of buttons
-		//addImage.setBounds(50, 50, 10, 25);
-		//search.setBounds(150, 50, 10, 25);
-		//resetData.setBounds(250, 50, 10, 25);
-		
-		/*TODO: change layout to fit the 3 buttons in 1 row
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 */
-		/*GridLayout gridLayout = new GridLayout(3,4);  // grid layout 1 * 2
-		//gridLayout.setColumns(3); 
-		//gridLayout.setRows(4); 
-		contentPane.setLayout(gridLayout);
-		
-		contentPane.add(addImage);
-		contentPane.add(search);
-		contentPane.add(resetData);
-		contentPane.add(new JLabel("1"));
-		contentPane.add(imgThumb);
-
-		contentPane.add(new JLabel("2"));
-		contentPane.add(new JLabel("3"));
-		contentPane.add(new JLabel("4"));
-		contentPane.add(new JLabel("5"));
-		contentPane.add(new JLabel("6"));
-		contentPane.add(new JLabel("7"));
-		contentPane.add(new JLabel("8"));*/
-		
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.setColumns(2);
+    	//Set bound of panel
+        searchScroll.setBounds(30, 250, 740, 300);
+        
+        //Set bound of buttons
+        addImage.setBounds(50, 50, 10, 25);
+        search.setBounds(150, 50, 10, 25);
+        resetData.setBounds(250, 50, 10, 25);
+        imgThumb.setBounds(250, 30, 300, 200);
+        
+        //Adding search results
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.setColumns(2);
+		gridLayout.setRows(20); 
 		searchResults.setLayout(gridLayout);
-		for (int i=0;i<1;i++) {
-			searchResults.add(new JLabel("Hi!"));
-			searchResults.add(new JLabel("There"));			
-		}
-		//contentPane.add(searchScroll);
 		
-		contentPane.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;	
-		
-		//TOP BAR
-        c.gridwidth = 2;
-        c.gridheight = 1;
-	    c.gridy = 0;
-	    
-        c.anchor = GridBagConstraints.NORTHEAST;
-        c.gridx = 0;
-	    contentPane.add(addImage, c);
+        for (int i=0; i<20; i++) {
+        	searchResults.add(new JLabel("Rank " + (int)(i+1)));
+        	searchResults.add(resThumb[i]);
+        }
+          
+    	//Adding components
+    	controlBar.add(addImage);
+        controlBar.add(search);
+        controlBar.add(resetData);
+        controlBar.setVisible(true);
+        //searchResults.add(imgThumb);
+        searchResults.setVisible(true);
+        imgThumb.setVisible(true);
+        add(imgThumb);
+        add(searchScroll);
+        add(controlBar);
 
-	    c.anchor = GridBagConstraints.NORTH;
-        c.gridx = 2;
-	    contentPane.add(new JButton("Placeholder"), c);
-	    
-	    c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx = 4;
-	    contentPane.add(new JButton("Placeholder"), c);
-		
-		//SEARCH BUTTON
-        c.gridwidth = 6;
-        c.gridheight = 2;
-	    c.gridy = 1;
-        c.gridx = 0;
-	    c.anchor = GridBagConstraints.NORTHEAST;
-	    contentPane.add(new JButton("Placeholder"), c);
-		
-	    //IMAGE THUMBNAIL 
-	    c.gridwidth = 3;
-	    c.gridy = 6;
-        c.gridx = 0;
-	    c.anchor = GridBagConstraints.NORTHEAST;
-	    contentPane.add(imgThumb, c);
-
-	    //RESULTS PANE 
-	    c.gridwidth = 3;
-	    c.gridy = 6;
-        c.gridx = 0;
-	    c.anchor = GridBagConstraints.NORTHWEST;
-	    contentPane.add(searchResults, c);
-	    
-	    
-	    
-		
-       /* c.anchor = GridBagConstraints.NORTH;
-		c.weightx = 0.5;	
-		c.fill = GridBagConstraints.HORIZONTAL;
-	    c.gridx = 0;
-	    c.gridy = 0;
-	    c.anchor = GridBagConstraints.PAGE_START;
-	    contentPane.add(addImage, c);
-		
-	    //c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 0.5;
-	    c.gridx = 1;
-	    c.gridy = 0;
-	    contentPane.add(new JButton("Placeholder"), c);
-	 
-	    //c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 0.5;
-	    c.gridx = 2;
-	    c.gridy = 0;
-	    contentPane.add(resetData, c);
-	 
-	    //c.fill = GridBagConstraints.HORIZONTAL;
-	    c.ipady = 40;      //make this component tall
-	    c.weightx = 0.0;
-	    c.gridwidth = 3;
-	    c.gridx = 0;
-	    c.gridy = 1;
-	    contentPane.add(search, c);
-	 
-	    c.weightx = 0.0;
-	    c.gridwidth = 5;
-	    c.gridx = 0;
-	    c.gridy = 2;
-	    contentPane.add(imgThumb, c);*/
-	    
-	    /*//button = new JButton("5");
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.ipady = 0;       //reset to default
-	    c.weighty = 1.0;   //request any extra vertical space
-	    c.anchor = GridBagConstraints.PAGE_END; //bottom of space
-	    c.insets = new Insets(10,0,0,0);  //top padding
-	    c.gridx = 1;       //aligned with button 2
-	    c.gridwidth = 2;   //2 columns wide
-	    c.gridy = 2;       //third row
-	    contentPane.add(addImage, c);
-	    */
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		contentPane.setVisible(true);
-		setVisible(true);
-		repaint();
-		
-		// File chooser to open query image
-		addImage.addActionListener(new ActionListener() {
-			@SuppressWarnings("static-access")
+    	//Attaching image button
+    	addImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setDialogTitle("Please select a query image");
 				int returnVal = fileChooser.showOpenDialog(View.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					imgPath = fileChooser.getSelectedFile().getAbsolutePath();
-					img = null;
 					try {
 						img = ImageIO.read(new File(imgPath));
 						buffered = ImageIO.read(new File(imgPath));
@@ -234,27 +112,38 @@ public class View extends JFrame {
 				}
 			}
 		});
-		
-		search.addActionListener(new ActionListener() {
+    	
+    	//Perform search
+    	search.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				/*
-				 * TODO: Insert search function here
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 */
+				getResults(buffered);
+				imgThumb.setIcon(new ImageIcon(img));
+				
 			}
 		});
+    }
+    
+    protected void getResults(BufferedImage buffered) {
+		// TODO Auto-generated method stub
+    	int[] results = new int[20];
+    	//INSERT SEARCH FUNCTION HERE
+    	//SHOULD RETURN A LIST OF IMAGE INDEX
+    	
+    	
+        for (int i=0; i<20; i++) {
+        	Image resultImg = null;
+        	//TODO: LOAD IMAGES FROM FILES HERE
+        	
+        	
+        	resultImg = resultImg.getScaledInstance(width, -1, img.SCALE_DEFAULT);
+			resThumb[i].setIcon(new ImageIcon(resultImg));
+        }
 	}
-	
+
 	// main class
-	// only for testing view
-	public static void main(String[] args) {
-		View view = new View();
-		view.setVisible(true);
-	}
+    // only for testing view
+    public static void main(String[] args) {
+            View view = new View();
+            view.setVisible(true);
+    }
 }

@@ -54,3 +54,7 @@ local.properties
 .cproject
 # PDT-specific
 .buildpath
+
+*.class
+
+bin/View.class
