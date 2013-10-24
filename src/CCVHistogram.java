@@ -48,17 +48,20 @@ public class CCVHistogram {
             for (int j=0; j<imHeight; j++) {
                 // perform depth first search with unchecked pixel
                 if (!check[i][j]) {
-                    int area = dfs(imgIntensity, imgIntensity[i][j], i, j, imWidth, imHeight,check);
-                    if (area > 5) {
-                        alpha[imgIntensity[i][j][0]*dim*dim
-                                +imgIntensity[i][j][1]*dim
-                                +imgIntensity[i][j][2]*dim]++;
-                        System.out.printf("alpha %d %d %d\n", i, j, area);
-                    } else {
-                        beta[imgIntensity[i][j][0]*dim*dim
-                                +imgIntensity[i][j][1]*dim
-                                +imgIntensity[i][j][2]*dim]++;
-                    }
+                	if (checkAdjacent(imgIntensity, i, j, check)) {
+                		check[i][j]=true;
+                	} else {
+                		int area = dfs(imgIntensity, imgIntensity[i][j], i, j, imWidth, imHeight,check, 1);
+                		if (area > 5) {
+                			alpha[imgIntensity[i][j][0]*dim*dim
+                			      +imgIntensity[i][j][1]*dim
+                			      +imgIntensity[i][j][2]*dim]++;
+                		} else {
+                			beta[imgIntensity[i][j][0]*dim*dim
+                			     +imgIntensity[i][j][1]*dim
+                			     +imgIntensity[i][j][2]*dim]++;
+                        }
+                	}
                 }
             }
         }
@@ -104,17 +107,16 @@ public class CCVHistogram {
         //get the overall weighted bins value
         double weight = 0.7;
         for (int i=0; i < bins.length; i++) {
-        	//bins[i] = weight * alpha[i] + (1-weight) * beta[i];
-            bins[i] = weight;
+        	bins[i] = weight * alpha[i] + (1-weight) * beta[i];
+            //bins[i] = weight;
         }
         
 		return bins;
 		
 	}
 
-    private static int dfs(int[][][] img, int[] val, int x, int y, int width, int height, boolean[][] check) {
+    private static int dfs(int[][][] img, int[] val, int x, int y, int width, int height, boolean[][] check, int currentArea) {
         // neglect if position is not validated
-
         if (x<0 || y<0 || x>=img.length || y>=img[0].length) {
             return 0;
         }
@@ -132,24 +134,62 @@ public class CCVHistogram {
         }
 
         // mark this pixel as checked
-        check[x][y] = true;
+        if (img[x][y][0] == val[0] &&
+                img[x][y][1] == val[1] &&
+                img[x][y][2] == val[2]) {
+        	currentArea++;
+        	check[x][y] = true;
+            
+        	//System.out.printf("%d %d %d %d %d %d\n", x, y, img[x][y][0], img[x][y][1], img[x][y][2], currentArea);
 
-        // initialize bound for loop
-        int area =  1;
-        int lowerX = (x==0)? 0: x-1;
-        int upperX = (x==width-1)? height-1: x+1;
-        int lowerY = (y==0)? 0: y-1;
-        int upperY = (y==height-1)? height-1: y+1;    
+            // initialize bound for loop
+            int area =  1;
+            int lowerX = (x==0)? 0: x-1;
+            int upperX = (x==width-1)? height-1: x+1;
+            int lowerY = (y==0)? 0: y-1;
+            int upperY = (y==height-1)? height-1: y+1;    
 
-        
-        for (int i=lowerX; i<=upperX; i++) {
-            for (int j=lowerY; j<=upperY; j++) {
-                if (i!=x && j!=y) {
-                    area += dfs(img, val, i, j, width, height, check);
+            
+            for (int i=lowerX; i<=upperX; i++) {
+                for (int j=lowerY; j<=upperY; j++) {
+                	if (currentArea == 10) 
+                    	return currentArea;
+                    if (i!=x && j!=y) {
+                        area += dfs(img, val, i, j, width, height, check, currentArea);
+                    }
+                    
                 }
             }
+            
+            return area;
+        }
+        return 0;
+    }
+    
+    private static boolean checkAdjacent(int[][][] img, int x, int y, boolean[][] check) {
+    	boolean result = false;
+    	
+    	int width = img.length;
+    	int height = img[0].length;
+    	int lowerX = (x==0)? 0: x-1;
+        int upperX = (x==width-1)? height-1: x+1;
+        int lowerY = (y==0)? 0: y-1;
+        int upperY = (y==height-1)? height-1: y+1; 
+    	
+        for (int i=lowerX; i<=upperX; i++) {
+        	for (int j=lowerY; j<upperY; j++) {
+        		if (i!=x && j!=y) {
+        			if (check[i][j]== true && 
+        					img[i][j][0] == img[x][y][0] &&
+        					img[i][j][1] == img[x][y][1] &&
+        					img[i][j][2] == img[x][y][2]) {
+        				result = true;
+        				break;
+        			}
+        		}
+        	}
         }
         
-        return area;
+    	return result;
     }
 }
