@@ -43,6 +43,7 @@ public class CCVHistogram {
 
         // calculate CCV Hisogram
         // apply Depth-First Search
+        
         for (int i=0; i<imWidth; i++) {
             for (int j=0; j<imHeight; j++) {
                 // perform depth first search with unchecked pixel
@@ -52,6 +53,7 @@ public class CCVHistogram {
                         alpha[imgIntensity[i][j][0]*dim*dim
                                 +imgIntensity[i][j][1]*dim
                                 +imgIntensity[i][j][2]*dim]++;
+                        System.out.printf("alpha %d %d %d\n", i, j, area);
                     } else {
                         beta[imgIntensity[i][j][0]*dim*dim
                                 +imgIntensity[i][j][1]*dim
@@ -60,6 +62,7 @@ public class CCVHistogram {
                 }
             }
         }
+        
 
         /*****************************************************************************
 		//TODO: Use DFS or NFS or any other algorithm to find connected components
@@ -101,7 +104,8 @@ public class CCVHistogram {
         //get the overall weighted bins value
         double weight = 0.7;
         for (int i=0; i < bins.length; i++) {
-        	bins[i] = weight * alpha[i] + (1-weight) * beta[i];
+        	//bins[i] = weight * alpha[i] + (1-weight) * beta[i];
+            bins[i] = weight;
         }
         
 		return bins;
@@ -110,6 +114,7 @@ public class CCVHistogram {
 
     private static int dfs(int[][][] img, int[] val, int x, int y, int width, int height, boolean[][] check) {
         // neglect if position is not validated
+
         if (x<0 || y<0 || x>=img.length || y>=img[0].length) {
             return 0;
         }
@@ -131,33 +136,20 @@ public class CCVHistogram {
 
         // initialize bound for loop
         int area =  1;
-        if (x!=0 && x < width-1) {
-            if (y!=0) {
-                System.out.println("case 1 " + x + " " + y);
-                area += dfs(img, val, x, y-1, width, height,check);        
-                area += dfs(img, val, x-1, y-1, width, height, check);
-                area += dfs(img, val, x+1, y-1, width, height, check);
-            }
-            if (y< height-1) {
-                System.out.println("case 2 " + x + " " + y);
-                area += dfs(img, val, x, y+1, width, height, check);
-                area += dfs(img, val, x-1, y+1, width, height, check);
-                area += dfs(img, val, x+1, y+1, width, height, check);
-            }
-            area += dfs(img, val, x-1, y, width, height, check);
-            area += dfs(img, val, x+1, y, width, height, check);
-        } else if (x == 0) {
+        int lowerX = (x==0)? 0: x-1;
+        int upperX = (x==width-1)? height-1: x+1;
+        int lowerY = (y==0)? 0: y-1;
+        int upperY = (y==height-1)? height-1: y+1;    
 
+        
+        for (int i=lowerX; i<=upperX; i++) {
+            for (int j=lowerY; j<=upperY; j++) {
+                if (i!=x && j!=y) {
+                    area += dfs(img, val, i, j, width, height, check);
+                }
+            }
         }
         
-
-         
-        
-        
-
-        
-        
-
         return area;
     }
 }
