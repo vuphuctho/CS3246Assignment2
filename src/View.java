@@ -16,10 +16,7 @@ import java.io.IOException;
  * View will communicate with Controller to connect with Model  
  */
 public class View extends JFrame {
-    // variables
-	private JPanel controlBar;
-	private JPanel searchResults;
-    
+   	private JPanel controlBar;	
     private JButton addImage;
     private JButton search;
     private JButton resetData;
@@ -28,6 +25,10 @@ public class View extends JFrame {
 	private Image img;
 	private BufferedImage buffered;
 	private JLabel imgThumb;
+
+	private JPanel searchResults;
+	private JScrollPane searchScroll;
+	private JLabel[] resThumb;
 
 	private final int width = 300;
     
@@ -46,8 +47,6 @@ public class View extends JFrame {
     	//Initialize variables 
     	//controlBar = (JPanel)this.getContentPane();
     	controlBar = new JPanel();
-    	searchResults = new JPanel();
-    	
     	addImage = new JButton("Add Image");
     	search = new JButton("Search now!");
     	resetData = new JButton("Reset Search History");
@@ -57,10 +56,15 @@ public class View extends JFrame {
     	buffered = null;
     	imgThumb = new JLabel();
     	
+    	searchResults = new JPanel();
+		searchScroll = new JScrollPane(searchResults, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
+		resThumb = new JLabel[20];
+        for (int i=0; i<20; i++) {
+        	resThumb[i] = new JLabel();
+        }
+		
     	//Set bound of panel
-        controlBar.setBounds(0, 200, 800, 100);
-    	searchResults.setBackground(new Color(255, 255, 255));
-        searchResults.setBounds(30, 250, 740, 300);
+        searchScroll.setBounds(30, 250, 740, 300);
         
         //Set bound of buttons
         addImage.setBounds(50, 50, 10, 25);
@@ -68,7 +72,17 @@ public class View extends JFrame {
         resetData.setBounds(250, 50, 10, 25);
         imgThumb.setBounds(250, 30, 300, 200);
         
-        
+        //Adding search results
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.setColumns(2);
+		gridLayout.setRows(20); 
+		searchResults.setLayout(gridLayout);
+		
+        for (int i=0; i<20; i++) {
+        	searchResults.add(new JLabel("Rank " + (int)(i+1)));
+        	searchResults.add(resThumb[i]);
+        }
+          
     	//Adding components
     	controlBar.add(addImage);
         controlBar.add(search);
@@ -78,12 +92,11 @@ public class View extends JFrame {
         searchResults.setVisible(true);
         imgThumb.setVisible(true);
         add(imgThumb);
-        add(searchResults);
+        add(searchScroll);
         add(controlBar);
 
     	//Attaching image button
     	addImage.addActionListener(new ActionListener() {
-			@SuppressWarnings("static-access")
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setDialogTitle("Please select a query image");
@@ -99,9 +112,35 @@ public class View extends JFrame {
 				}
 			}
 		});
+    	
+    	//Perform search
+    	search.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getResults(buffered);
+				imgThumb.setIcon(new ImageIcon(img));
+				
+			}
+		});
     }
     
-    // main class
+    protected void getResults(BufferedImage buffered) {
+		// TODO Auto-generated method stub
+    	int[] results = new int[20];
+    	//INSERT SEARCH FUNCTION HERE
+    	//SHOULD RETURN A LIST OF IMAGE INDEX
+    	
+    	
+        for (int i=0; i<20; i++) {
+        	Image resultImg = null;
+        	//TODO: LOAD IMAGES FROM FILES HERE
+        	
+        	
+        	resultImg = resultImg.getScaledInstance(width, -1, img.SCALE_DEFAULT);
+			resThumb[i].setIcon(new ImageIcon(resultImg));
+        }
+	}
+
+	// main class
     // only for testing view
     public static void main(String[] args) {
             View view = new View();

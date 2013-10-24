@@ -56,3 +56,5 @@ local.properties
 .buildpath
 
 *.class
+
+bin/View.class
