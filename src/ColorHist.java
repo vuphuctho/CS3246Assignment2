@@ -59,10 +59,10 @@ public class ColorHist extends JFrame {
 	private int width = 300; // the size for each image result
 	private int height = 300;
 	
-	private int dim = 64;
+	private static int dim = 64;
 	
-	private BufferedImage buffered1;
-	private BufferedImage buffered2;
+	private static BufferedImage buffered1;
+	private static BufferedImage buffered2;
 	private Histogram hist1;
 	private Histogram hist2;
 	
@@ -183,10 +183,7 @@ public class ColorHist extends JFrame {
 						hist2.load(imagePath2);
 						hist2.repaint();
 						img2 = img2.getScaledInstance(width, -1, img2.SCALE_DEFAULT);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					} catch (IOException e1) {}
 					imageLabel2.setIcon(new ImageIcon(img2));
 					
 				}
@@ -209,32 +206,32 @@ public class ColorHist extends JFrame {
 		
 	}
 	
-	public double computeSimilarity() {
+	public static double computeSimilarity() {
 		
 		double[] ccvHist1 = CCVHistogram.getCCVHistogram(buffered1);
 		double[] ccvHist2 = CCVHistogram.getCCVHistogram(buffered2);		
 		double[] texHist1 = TextureHistogram.getTextureHistogram(buffered1);
 		double[] texHist2 = TextureHistogram.getTextureHistogram(buffered2);
+		double[] origHist1 = getHist(buffered1);
+		double[] origHist2 = getHist(buffered2);
 		
-		for (int i=0; i<texHist1.length; i++) {
-			System.out.print(texHist1[i] + " ");
-		}
 		double w = 0.3; //weight to texture Histogram
+		double v = 0.1; //weight to original Histogram
 		double ccvDistance = calculateDistance(ccvHist1, ccvHist2);
 		double texDistance = calculateDistance(texHist1, texHist2);
-
-		double dist = texDistance * w + ccvDistance * (1-w);
+		double origDistance = calculateDistance(origHist1, origHist2);
+		
+		double dist = origDistance * v + texDistance * w + ccvDistance * (1-w-v);
 		
 		return 1-dist;
 	}
 	
-	public double[] getHist(BufferedImage image) {
+	public static double[] getHist(BufferedImage image) {
 		
 
 		int imHeight = image.getHeight();
         int imWidth = image.getWidth();
         
-        /* origin method
         double[] bins = new double[dim*dim*dim];
         int step = 256 / dim;
         Raster raster = image.getRaster();
@@ -258,19 +255,16 @@ public class ColorHist extends JFrame {
 
             }
         }
-        */
-
-        double[] bins = CCVHistogram.getCCVHistogram(image);
-
+        
         //normalize
-        for(int i = 0; i < 3*dim; i++) {
+        for(int i = 0; i < bins.length; i++) {
         	bins[i] = bins[i]/(imHeight*imWidth);
         }
         
         return bins;
 	}
 	
-	public double calculateDistance(double[] array1, double[] array2)
+	public static double calculateDistance(double[] array1, double[] array2)
     {
 		// Euclidean distance
         double Sum = 0.0;

@@ -66,13 +66,13 @@ public class View extends JFrame {
 		}
 
 		// Set bound of panel
-		searchScroll.setBounds(30, 250, 740, 300);
+		searchScroll.setBounds(30, 260, 740, 300);
 
 		// Set bound of buttons
 		addImage.setBounds(50, 50, 10, 25);
 		search.setBounds(150, 50, 10, 25);
 		resetData.setBounds(250, 50, 10, 25);
-		imgThumb.setBounds(250, 30, 300, 200);
+		imgThumb.setBounds(250, 40, 300, 200);
 
 		// Adding search results
 		GridLayout gridLayout = new GridLayout();
