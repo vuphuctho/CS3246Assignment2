@@ -71,7 +71,7 @@ public class TextureHistogram {
     	  bins[i] = bins[i]/(imHeight*imWidth);
       }
         
-		return bins;	
+      return bins;	
 	}
 	
 	// Applies a filter to the input image

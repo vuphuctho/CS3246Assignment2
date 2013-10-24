@@ -66,13 +66,13 @@ public class View extends JFrame {
 		}
 
 		// Set bound of panel
-		searchScroll.setBounds(30, 250, 740, 300);
+		searchScroll.setBounds(30, 260, 740, 300);
 
 		// Set bound of buttons
 		addImage.setBounds(50, 50, 10, 25);
 		search.setBounds(150, 50, 10, 25);
 		resetData.setBounds(250, 50, 10, 25);
-		imgThumb.setBounds(250, 30, 300, 200);
+		imgThumb.setBounds(250, 40, 300, 200);
 
 		// Adding search results
 		GridLayout gridLayout = new GridLayout();
@@ -128,14 +128,17 @@ public class View extends JFrame {
 	}
 
 	protected void getResults(BufferedImage buffered) {
-		// TODO Auto-generated method stub
-		int[] results = new int[20];
-		// INSERT SEARCH FUNCTION HERE
-		// SHOULD RETURN A LIST OF IMAGE INDEX
-
+		String[] results = new String[20];
+				
+		
 		for (int i = 0; i < 20; i++) {
+			File imgFile = new File(results[i]);
 			Image resultImg = null;
-			// TODO: LOAD IMAGES FROM FILES HERE
+			try {
+				resultImg = ImageIO.read(imgFile);
+			} catch (IOException e) {
+				System.out.println("Failed to load iamge!");
+			}
 
 			resultImg = resultImg.getScaledInstance(width, -1,
 					img.SCALE_DEFAULT);
