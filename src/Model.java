@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 
 /*
  * Job of class Model
@@ -10,9 +11,21 @@ import java.awt.image.BufferedImage;
  */
 
 public class Model {
-	public static double[] getImageDist(BufferedImage q) {
+	
+	public static double[] getImageRank(BufferedImage q) {
+		double[] rank = new double[20];
+		double[] sim = getImageSim(q);
+		
+		for (int i=0; i<20; i++) {
+			rank[i] = getMaxIndex(sim);
+		}	
+		return rank;
+		
+	}
+
+	public static double[] getImageSim(BufferedImage q) {
 		int N = 400;
-		double[] dist = new double[N];
+		double[] sim = new double[N];
 		
 		for (int i=0; i<N; i++) {
 			double[] ccvHistQuery = CCVHistogram.getCCVHistogram(q);
@@ -24,10 +37,9 @@ public class Model {
 			double ccvDistance = calculateDistance(ccvHistQuery, ccvHistIndex);
 			double texDistance = calculateDistance(texHistQuery, texHistIndex);
 			
-			dist[i] = texDistance * w + ccvDistance * (1-w);				
-		}
-		
-		return dist;		
+			sim[i] = 1 - texDistance * w + ccvDistance * (1-w);				
+		}	
+		return sim;		
 	}
 	
 	public static double calculateDistance(double[] array1, double[] array2)
@@ -56,5 +68,17 @@ public class Model {
         double dist = Math.sqrt( 1 - Sum / Math.sqrt(h1*h2));
         return dist;*/
     }
-
+	
+	private static double getMaxIndex(double[] sim) {
+		double max = sim[0];
+		int index = 0;
+		for (int i=1;i<400;i++) {
+			if (sim[i] > max) {
+				max = sim[i];
+				sim[i] = -1;
+				index = i;
+			}
+		}
+		return index;
+	}
 }

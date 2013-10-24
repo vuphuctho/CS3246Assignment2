@@ -129,8 +129,7 @@ public class View extends JFrame {
 
 	protected void getResults(BufferedImage buffered) {
 		String[] results = new String[20];
-		
-		double[] dist = new double[400];
+				
 		
 		for (int i = 0; i < 20; i++) {
 			File imgFile = new File(results[i]);
