@@ -17,9 +17,8 @@ import java.io.IOException;
  */
 public class View extends JFrame {
 	// variables
-	private JPanel contentPane = new JPanel();
-	private JPanel controlBar = new JPanel();
-	private JPanel searchPanel = new JPanel();
+	private JPanel contentPane;
+	private JPanel contentPane2;
 	
 	private int width = 300; // the size for each image result
 	private int height = 300;
@@ -44,18 +43,18 @@ public class View extends JFrame {
 		search = new JButton("Search now!");
 		resetData = new JButton("Reset search history");
 		
-		imgThumb = new JLabel("Query Image");
+		imgThumb = new JLabel();
 		searchResults = new JPanel();
-		JScrollPane searchScroll = new JScrollPane(searchResults);
+		searchScroll = new JScrollPane(searchResults); 
+		//, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
 
 		//distLabel.setFont(new Font("Serif", Font.BOLD, 20));
 		
-		controlBar = new JPanel();
-		searchPanel = new JPanel();
-		
 		//hist1 = new Histogram();
 		//hist2 = new Histogram();
-		contentPane = (JPanel)this.getContentPane();
+		//contentPane = (JPanel)this.getContentPane();
+		contentPane = new JPanel();
+		contentPane2 = (JPanel)this.getContentPane();
 		
 		setTitle("CS3246 Assignment 2");
 		setBackground(new Color(50, 50, 50));
@@ -105,11 +104,11 @@ public class View extends JFrame {
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.setColumns(2);
 		searchResults.setLayout(gridLayout);
-		for (int i=0;i<1;i++) {
+		for (int i=0;i<122;i++) {
 			searchResults.add(new JLabel("Hi!"));
-			searchResults.add(new JLabel("There"));			
+			searchResults.add(new JLabel("There\n"));			
 		}
-		//contentPane.add(searchScroll);
+		contentPane.add(searchScroll);
 		
 		contentPane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -143,20 +142,50 @@ public class View extends JFrame {
 	    contentPane.add(new JButton("Placeholder"), c);
 		
 	    //IMAGE THUMBNAIL 
-	    c.gridwidth = 3;
-	    c.gridy = 6;
+	    c.gridwidth = 2;
+        c.gridheight = 6;
+	    c.gridy = 3;
         c.gridx = 0;
 	    c.anchor = GridBagConstraints.NORTHEAST;
 	    contentPane.add(imgThumb, c);
 
 	    //RESULTS PANE 
-	    c.gridwidth = 3;
-	    c.gridy = 6;
-        c.gridx = 0;
+	    c.gridwidth = 4;
+        c.gridheight = 6;
+	    c.gridy = 3;
+        c.gridx = 2;
 	    c.anchor = GridBagConstraints.NORTHWEST;
-	    contentPane.add(searchResults, c);
+	    contentPane.add(searchScroll, c);
+	    
+	    GridLayout gridLayout1 = new GridLayout();  // grid layout 1 * 2
+		gridLayout.setColumns(2); 
+		gridLayout.setRows(4); 
+		contentPane2.setLayout(gridLayout1);
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(new JButton("Placeholder"));
+		contentPane2.setVisible(true);
+		setVisible(true);
+		repaint();
+		
+	    GridLayout gridLayout2 = new GridLayout();
+	    gridLayout2.setColumns(3);
 	    
 	    
+	    contentPane2.setLayout(gridLayout2);
+	    contentPane2.add(new JButton("Placeholder"));
+	    contentPane2.add(new JButton("Placeholder"));
+	    contentPane2.add(new JButton("Placeholder"));
+	    contentPane2.add(new JButton("Placeholder"));
+	    contentPane2.add(new JButton("Placeholder"));
+	    contentPane2.add(new JButton("Placeholder"));
+	    contentPane2.add(new JButton("Placeholder"));
+		contentPane2.add(imgThumb);
 	    
 		
        /* c.anchor = GridBagConstraints.NORTH;
