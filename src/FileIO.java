@@ -38,7 +38,7 @@ public class FileIO {
 						TextureHistogram th = new TextureHistogram();
 		        		imgCCVHist = CCVHistogram.getCCVHistogram(img);
 						imgTextureHist = th.getTextureHistogram(img);		        		
-		        		FileWriter fw = new FileWriter("index/" + fileName + ".txt");
+		        		FileWriter fw = new FileWriter("D:/Workplace/CS3246Assignment2/index/" + fileName + ".txt");
 		        		BufferedWriter writer = new BufferedWriter(fw);
 		        		
 		        		writer.write(imgTextureHist.length+ "\n");
