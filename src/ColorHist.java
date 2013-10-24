@@ -291,6 +291,17 @@ public class ColorHist extends JFrame {
         return dist;*/
     }
 	
+	public static double computeSimilarity(double[] ccvHist1, double[] texHist2, double[] ccvHist2, double[] texHist1) {
+		double w = 0.3; //weight to texture Histogram
+		double v = 0.1; //weight to original Histogram
+		double ccvDistance = calculateDistance(ccvHist1, ccvHist2);
+		double texDistance = calculateDistance(texHist1, texHist2);
+		//double origDistance = calculateDistance(origHist1, origHist2);
+		
+		double dist = + texDistance * w + ccvDistance * (1-w);
+		
+		return 1-dist;
+	}
     
 	public static void main(String[] args) {
 		ColorHist example = new ColorHist();

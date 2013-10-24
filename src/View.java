@@ -138,6 +138,8 @@ public class View extends JFrame {
 		
 		FileIO.getHist(dataCCVHist, dataTextureHist);
 		
+		results = retrieveTopResult(queryCCVHist, queryTextureHist, dataCCVHist, dataTextureHist);
+		
 		for (int i = 0; i < 20; i++) {
 			File imgFile = new File(results[i]);
 			Image resultImg = null;
@@ -153,6 +155,28 @@ public class View extends JFrame {
 		}
 	}
 
+	private String[] retrieveTopResult(double[]queryCCV, double[]queryTexture, double[][]CCV, double[][]Texture) {
+		String[] results = new String[20];
+		double[] similarity = new double[CCV.length];
+		
+		for (int i=0; i<CCV.length; i++) {
+			similarity[i] = ColorHist.computeSimilarity(queryCCV, queryTexture, CCV[i], Texture[i]);
+		}
+		
+		for (int i=0; i<20; i++) {
+			int max = 0;
+			for (int j=0; j<similarity.length; j++) {
+				if (similarity[max] < similarity[j]) {
+					max = j;
+				}
+			}
+			results[i] = Integer.toString(max);
+			similarity[max] = -1; // remove from list
+		}
+		
+		return results;
+	}
+	
 	// main class
 	// only for testing view
 	public static void main(String[] args) {
