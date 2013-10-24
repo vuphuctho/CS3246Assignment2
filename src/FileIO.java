@@ -1,7 +1,12 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Vector;
 import java.awt.Image;
@@ -11,6 +16,7 @@ import javax.imageio.ImageIO;
 
 
 public class FileIO {
+	final static int N = 400; // max number of files
 	final static File data = new File("D:/Workplace/CS3246Assignment2/data/Dataset");
 
 	//public static Vector<double[]> imgTextureHist = new Vector<double[]>();
@@ -61,7 +67,48 @@ public class FileIO {
 		}	
 	}
 
-
+	public static void getHist(double[][] CCVHist, double[][] TextureHist) {
+		for (final File fileEntry :data.listFiles()) {
+			if (fileEntry.isDirectory()) {
+	            listFilesForFolder(fileEntry);
+	        } else {
+	        	FileInputStream fis;
+				try {
+					// get image number
+					String fileName = fileEntry.getName();
+		        	int pos = fileName.lastIndexOf(".");
+		        	if (pos>0) {
+		        		fileName = fileName.substring(0, pos);
+		        	}
+		        	
+		        	int imgNo = Integer.parseInt(fileName);
+		        	
+					fis = new FileInputStream(fileEntry);
+					DataInputStream in = new DataInputStream(fis);
+		            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		            
+		            int TextureHistLength = Integer.parseInt(br.readLine());
+		            for (int i=0; i<TextureHistLength; i++) {
+		            	TextureHist[imgNo][i] = Double.parseDouble(br.readLine());
+		            }
+		            int CCVHistLength = Integer.parseInt(br.readLine());
+		            for (int i=0; i<CCVHistLength; i++) {
+		            	CCVHist[imgNo][i] = Double.parseDouble(br.readLine());
+		            }
+		            
+		            in.close();
+		            fis.close();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+	        }	
+		}
+	}
+	
 	public static void listFilesForFolder(final File folder) {
 	    for (final File fileEntry : folder.listFiles()) {
 	        if (fileEntry.isDirectory()) {

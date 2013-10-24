@@ -130,6 +130,13 @@ public class View extends JFrame {
 	protected void getResults(BufferedImage buffered) {
 		String[] results = new String[20];
 				
+		double[] queryCCVHist = CCVHistogram.getCCVHistogram(buffered);
+		double[] queryTextureHist = TextureHistogram.getTextureHistogram(buffered);
+		
+		double[][] dataCCVHist = new double[FileIO.N][(int) Math.pow(CCVHistogram.dim, 3)];
+		double[][] dataTextureHist= new double[FileIO.N][TextureHistogram.dim];
+		
+		FileIO.getHist(dataCCVHist, dataTextureHist);
 		
 		for (int i = 0; i < 20; i++) {
 			File imgFile = new File(results[i]);
