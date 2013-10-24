@@ -1,4 +1,6 @@
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
@@ -35,13 +37,20 @@ public class FileIO {
 			        	System.out.println(fileEntry.getName());
 						TextureHistogram th = new TextureHistogram();
 		        		imgCCVHist = CCVHistogram.getCCVHistogram(img);
-						//imgTextureHist = th.getTextureHistogram(img);		        		
-		        		PrintWriter writer = new PrintWriter("index/" + fileName + ".txt", "UTF-8");
+						imgTextureHist = th.getTextureHistogram(img);		        		
+		        		FileWriter fw = new FileWriter("index/" + fileName + ".txt");
+		        		BufferedWriter writer = new BufferedWriter(fw);
 		        		
-		                //for (int i=0; i<imgTextureHist.length; i++) {
-		                //	writer.println(imgTextureHist[i] + " ");
-		                //}
+		        		writer.write(imgTextureHist.length+ "\n");
+		                for (int i=0; i<imgTextureHist.length; i++) {
+		                	writer.write(imgTextureHist[i] + "\n");
+		                }
+		                writer.write(imgCCVHist.length + "\n");
+		                for (int i=0; i<imgCCVHist.length; i++) {
+		                	writer.write(imgCCVHist[i]+ "\n");
+		                }
 		        		writer.close();
+		        		fw.close();
 		        	    img.flush();
 		        	    img = null;
 		        	    th = null;	
