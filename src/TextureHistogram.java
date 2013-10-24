@@ -126,9 +126,7 @@ public class TextureHistogram {
 					    		//apply filter by using multiplication 
 					    		int in = 0;    		
 					    		if (((u+i) < input.length) && ((v+j) < input[0].length)) {
-						    		//System.out.println(u + " " + t + " " + v);
 					    			in = input[u+i][v+j];
-
 					    		}
 					    		output[u+i][t+j] += in * filter[filter_type][v][t];
 					    	}

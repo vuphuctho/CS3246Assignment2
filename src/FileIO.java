@@ -1,55 +1,53 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Vector;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+
 import javax.imageio.ImageIO;
 
 
 public class FileIO {
 	final static File data = new File("data/Dataset");
 
+	//public static Vector<double[]> imgTextureHist = new Vector<double[]>();
 	
-	public static Vector<Image> readImageData() {
-		Vector<Image> imgData = new Vector<Image>();
-		
+	public static void readImageData() {
+				
 		for (final File fileEntry :data.listFiles()) {
 			if (fileEntry.isDirectory()) {
 	            listFilesForFolder(fileEntry);
 	        } else {
-	        	//String fileName = fileEntry.getName();
-	        	//int pos = fileName.lastIndexOf(".");
-	        	//if (pos>0) {
-	        	//	fileName = fileName.substring(0, pos);
-	        	//}
-	        	//System.out.println(fileName + " " + fileEntry.getName());
+	        	String fileName = fileEntry.getName();
+	        	int pos = fileName.lastIndexOf(".");
+	        	if (pos>0) {
+	        		fileName = fileName.substring(0, pos);
+	        	}
 	           
-	        	Image img = null;
+	        	BufferedImage img = null;
 
 				try {
 					img = ImageIO.read(fileEntry);
-					//System.out.println(fileEntry.getName());
+					if (img != null) {
+						double[] imgTextureHist = null;
+			        	System.out.println(fileEntry.getName());
+						TextureHistogram th = new TextureHistogram();
+		        		//imgTextureHist = th.getTextureHistogram(img);		        		
+		        		PrintWriter writer = new PrintWriter("index/" + fileName + ".txt", "UTF-8");
+		        		
+		                //for (int i=0; i<imgTextureHist.length; i++) {
+		                //	writer.println(imgTextureHist[i] + " ");
+		                //}
+		        		writer.close();
+		        	    img.flush();
+		        	    img = null;
+		        	    th = null;	
+		        	    imgTextureHist = null;
+		            }
 				} catch (IOException e) {}
-				
-				
-				
-	        	if (img != null) {
-	            	
-	        		System.out.println(imgData.size());
-	            	imgData.add(img);
-	                //System.out.println("It's an image");
-	            } else {
-	                //System.out.println("It's NOT an image");
-	            }
 	        }
-		}
-		
-		
-		
-		
-		
-		
-		
-		return imgData;
+		}	
 	}
 
 
