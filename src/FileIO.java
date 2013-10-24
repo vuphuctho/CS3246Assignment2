@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 
 public class FileIO {
-	final static File data = new File("data/Dataset");
+	final static File data = new File("D:/Workplace/CS3246Assignment2/data/Dataset");
 
 	//public static Vector<double[]> imgTextureHist = new Vector<double[]>();
 	
@@ -30,10 +30,12 @@ public class FileIO {
 				try {
 					img = ImageIO.read(fileEntry);
 					if (img != null) {
+						double[] imgCCVHist = null;
 						double[] imgTextureHist = null;
 			        	System.out.println(fileEntry.getName());
 						TextureHistogram th = new TextureHistogram();
-		        		//imgTextureHist = th.getTextureHistogram(img);		        		
+		        		imgCCVHist = CCVHistogram.getCCVHistogram(img);
+						//imgTextureHist = th.getTextureHistogram(img);		        		
 		        		PrintWriter writer = new PrintWriter("index/" + fileName + ".txt", "UTF-8");
 		        		
 		                //for (int i=0; i<imgTextureHist.length; i++) {

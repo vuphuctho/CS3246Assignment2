@@ -44,6 +44,8 @@ public class CCVHistogram {
         // calculate CCV Hisogram
         // apply Depth-First Search
         
+        //System.out.printf("%d %d\n", imWidth, imHeight);
+        //System.out.println(check[686][0]);
         for (int i=0; i<imWidth; i++) {
             for (int j=0; j<imHeight; j++) {
                 // perform depth first search with unchecked pixel
@@ -66,56 +68,13 @@ public class CCVHistogram {
             }
         }
         
-
-        /*****************************************************************************
-		//TODO: Use DFS or NFS or any other algorithm to find connected components
-		* Maybe BFS better?
-		* 
-			int count = 0; //number of current coherent nodes
-			
-			for each unvisited node (i,j) do 
-		
-				//1. Read the color value from pixel
-				int r = raster.getSample(i,j,0);
-            	int g = raster.getSample(i,j,1);
-            	int b = raster.getSample(i,j,2);
-            	int y  = (int)( 0.299   * r + 0.587   * g + 0.114   * b);
-        		int cb = (int)(-0.16874 * r - 0.33126 * g + 0.50000 * b);
-        		int cr = (int)( 0.50000 * r - 0.41869 * g - 0.08131 * b);
-        		
-        		int ybin = y / step;
-        		int cbbin = cb / step;
-        		int crbin = cr / step;
-        		
-        		//2. Look for pixels with the same color (ybin, cbbin, crbin) then coninue search
-        		  
-        		//If no more pixels found (search done), stop search and look at count 
-        		if (count > thres) 
-        			alpha[ybin*dim*dim + cbbin*dim + crbin] += count;
-        			//not sure if ybin*dim*dim+cbbin*dim+crbin*dim
-        		else 
-        			beta[ybin*dim*dim + cbbin*dim + crbin] += count;
-        			//not sure if ybin*dim*dim+cbbin*dim+crbin*dim
-        		
-        		//3. Continue until all nodes are visited, when done just exit
-        		
-		*
-		*
-		*
-		*******************************************************************************/
-        
         //get the overall weighted bins value
         double weight = 0.7;
         for (int i=0; i < bins.length; i++) {
         	bins[i] = weight * alpha[i] + (1-weight) * beta[i];
             //bins[i] = weight;
         }
-
-		// normalize
-		for (int i = 0; i < bins.length; i++) {
-			bins[i] = bins[i] / (imHeight * imWidth);
-		}
-
+        
 		return bins;
 		
 	}
@@ -174,22 +133,22 @@ public class CCVHistogram {
     private static boolean checkAdjacent(int[][][] img, int x, int y, boolean[][] check) {
     	boolean result = false;
     	
-    	int width = img.length;
-    	int height = img[0].length;
+    	int width = check.length;
+    	int height = check[0].length;
     	int lowerX = (x==0)? 0: x-1;
-        int upperX = (x==width-1)? height-1: x+1;
+        int upperX = (x==width-1)? width-1: x+1;
         int lowerY = (y==0)? 0: y-1;
         int upperY = (y==height-1)? height-1: y+1; 
     	
         for (int i=lowerX; i<=upperX; i++) {
-        	for (int j=lowerY; j<upperY; j++) {
+        	for (int j=lowerY; j<=upperY; j++) {
         		if (i!=x && j!=y) {
+        			//System.out.printf("%d %d %d %d\n", i, j, width, height);
         			if (check[i][j]== true && 
         					img[i][j][0] == img[x][y][0] &&
         					img[i][j][1] == img[x][y][1] &&
         					img[i][j][2] == img[x][y][2]) {
-        				result = true;
-        				break;
+        				return true;
         			}
         		}
         	}
