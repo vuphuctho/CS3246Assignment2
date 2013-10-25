@@ -155,17 +155,19 @@ public class View extends JFrame {
 		
 		for (int i=0; i<CCV.length; i++) {
 			similarity[i] = ColorHist.computeSimilarity(queryCCV, queryTexture, CCV[i], Texture[i]);
+			System.out.printf("%d ", i);
 		}
 		
 		for (int i=0; i<20; i++) {
-			int max = 0;
-			for (int j=0; j<similarity.length; j++) {
-				if (similarity[max] < similarity[j]) {
-					max = j;
+			// get the closest results, hence the ones with shortest distances
+			int min = 0;
+			for (int j=1; j<similarity.length; j++) {
+				if (similarity[min] > similarity[j] && similarity[j]!=0) {
+					min = j;
 				}
 			}
-			results[i] = Integer.toString(max);
-			similarity[max] = -1; // remove from list
+			results[i] = Integer.toString(min);
+			similarity[min] = Double.POSITIVE_INFINITY; // remove from list
 		}
 		
 		return results;

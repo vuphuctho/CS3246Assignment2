@@ -81,7 +81,7 @@ public class FileIO {
 		        	if (pos>0) {
 		        		fileName = fileName.substring(0, pos);
 		        	}
-		        	System.out.println(fileName);
+		        	// System.out.println(fileName);
 		        	int imgNo = Integer.parseInt(fileName);
 		        	
 					fis = new FileInputStream(fileEntry);
@@ -111,6 +111,7 @@ public class FileIO {
 	}
 	
 	public static Image loadResult(String fileName) {
+		System.out.printf("filename: %s.jpg\n", fileName);
 		File imgFile = new File("D:/Workplace/CS3246Assignment2/data/Dataset/" + fileName + ".jpg");
 		Image resultImg = null;
 		try {

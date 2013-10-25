@@ -267,15 +267,15 @@ public class ColorHist extends JFrame {
 	public static double calculateDistance(double[] array1, double[] array2)
     {
 		// Euclidean distance
-        double Sum = 0.0;
+        /*double Sum = 0.0;
         for(int i = 0; i < array1.length; i++) {
            Sum = Sum + Math.pow((array1[i]-array2[i]),2.0);
         }
-        return Math.sqrt(Sum);
+        return Math.sqrt(Sum);*/
         
         
         // Bhattacharyya distance
-        /*double h1 = 0.0;
+        double h1 = 0.0;
 		double h2 = 0.0;
 		int N = array1.length;
         for(int i = 0; i < N; i++) {
@@ -288,7 +288,7 @@ public class ColorHist extends JFrame {
            Sum = Sum + Math.sqrt(array1[i]*array2[i]);
         }
         double dist = Math.sqrt( 1 - Sum / Math.sqrt(h1*h2));
-        return dist;*/
+        return dist;
     }
 	
 	public static double computeSimilarity(double[] ccvHist1, double[] texHist2, double[] ccvHist2, double[] texHist1) {
@@ -298,9 +298,13 @@ public class ColorHist extends JFrame {
 		double texDistance = calculateDistance(texHist1, texHist2);
 		//double origDistance = calculateDistance(origHist1, origHist2);
 		
+		if (ccvDistance != ccvDistance || texDistance != texDistance) 
+			return Double.POSITIVE_INFINITY;
+		System.out.printf("%f %f\n", ccvDistance, texDistance);
+		//double dist = ccvDistance;
 		double dist = + texDistance * w + ccvDistance * (1-w);
 		
-		return 1-dist;
+		return dist;
 	}
     
 	public static void main(String[] args) {
